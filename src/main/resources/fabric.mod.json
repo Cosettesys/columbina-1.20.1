@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "columbina",
+	"version": "${version}",
+	"name": "Columbina",
+	"description": "Système de jetons/points par équipe.",
+	"authors": [
+		"Cosettesys"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/columbina/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.cosette.columbina.Columbina"
+		],
+		"client": [
+			"net.cosette.columbina.ColumbinaClient"
+		],
+		"fabric-datagen": [
+			"net.cosette.columbina.ColumbinaDataGenerator"
+		]
+	},
+	"mixins": [
+		"columbina.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
