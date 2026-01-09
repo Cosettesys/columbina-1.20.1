@@ -3,7 +3,10 @@ package net.cosette.columbina.command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.commands.CommandSourceStack;
 
 public class ColumbinaCommands {
 
@@ -16,14 +19,7 @@ public class ColumbinaCommands {
                                         .then(Commands.argument("name", StringArgumentType.word())
                                                 .executes(ctx -> {
                                                     String teamName = StringArgumentType.getString(ctx, "name");
-
-                                                    // Ici tu vas gérer la création d'équipe
-                                                    // Pour l'instant on fait juste un message
-                                                    ctx.getSource().sendSuccess(
-                                                            new TextComponent("Equipe créée : " + teamName),
-                                                            false
-                                                    );
-
+                                                    ctx.getSource().sendSuccess(Component.literal("Equipe créée : " + teamName), false);
                                                     return 1;
                                                 })
                                         )
