@@ -1,21 +1,22 @@
 package net.cosette.columbina.team;
 
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
+import java.util.Set;
 
 public class TeamManager {
 
     private static final TeamManager INSTANCE = new TeamManager();
 
+    // Map des points par équipe
     private final Map<String, Integer> teamPoints = new HashMap<>();
-    private final Map<UUID, String> playerTeams = new HashMap<>();
 
-    private TeamSavedData savedData; // persistance
+    // Map de l'équipe de chaque joueur
+    private final Map<UUID, String> playerTeams = new HashMap<>();
 
     private TeamManager() {}
 
@@ -23,35 +24,58 @@ public class TeamManager {
         return INSTANCE;
     }
 
-    // ⚡ Initialisation avec le SavedData pour persistance
-    public void init(ServerLevel level) {
-        savedData = TeamSavedData.get(level);
+    /** Charge les teams depuis TeamSavedData */
+    public void loadFromSavedData(ServerLevel level) {
+        TeamSavedData savedData = TeamSavedData.get(level);
 
-        // Restaurer l'état existant
-        teamPoints.clear();
-        playerTeams.clear();
+        // Charger les équipes existantes
+        for (String teamName : savedData.getTeams()) {
+            teamPoints.putIfAbsent(teamName, 0);
 
-        for (String teamName : savedData.getTeams().keySet()) {
-            teamPoints.put(teamName, 0); // on met 0 pour l'instant, peut étendre pour sauvegarder points
+            // Charger les joueurs de chaque team
             Set<UUID> members = savedData.getMembers(teamName);
-            for (UUID uuid : members) {
-                playerTeams.put(uuid, teamName);
+            for (UUID playerId : members) {
+                playerTeams.put(playerId, teamName);
             }
         }
     }
 
-    public boolean createTeam(String name) {
-        if (teamPoints.containsKey(name)) return false;
+    /** Crée une équipe et l'enregistre dans SavedData */
+    public boolean createTeam(ServerLevel level, String name) {
+        TeamSavedData savedData = TeamSavedData.get(level);
 
-        boolean success = savedData.createTeam(name);
-        if (!success) return false;
+        if (savedData.teamExists(name)) return false;
 
+        savedData.createTeam(name); // marque le savedData comme dirty
         teamPoints.put(name, 0);
         return true;
     }
 
     public boolean isPlayerInTeam(ServerPlayer player) {
         return playerTeams.containsKey(player.getUUID());
+    }
+
+    public boolean joinTeam(ServerLevel level, ServerPlayer player, String teamName) {
+        TeamSavedData savedData = TeamSavedData.get(level);
+
+        if (!savedData.teamExists(teamName)) return false;
+
+        // Vérifie que le joueur n'est pas déjà dans une équipe
+        if (playerTeams.containsKey(player.getUUID())) return false;
+
+        playerTeams.put(player.getUUID(), teamName);
+        savedData.joinTeam(player.getUUID(), teamName);
+        return true;
+    }
+
+    public boolean leaveTeam(ServerLevel level, ServerPlayer player) {
+        TeamSavedData savedData = TeamSavedData.get(level);
+
+        String team = playerTeams.remove(player.getUUID());
+        if (team == null) return false;
+
+        savedData.leaveTeam(player.getUUID());
+        return true;
     }
 
     public void addPoints(String team, int points) {
@@ -66,26 +90,12 @@ public class TeamManager {
         return teamPoints.containsKey(name);
     }
 
-    public boolean joinTeam(ServerPlayer player, String teamName) {
-        if (!teamPoints.containsKey(teamName)) return false;
-        if (playerTeams.containsKey(player.getUUID())) return false;
-
-        boolean success = savedData.joinTeam(player.getUUID(), teamName);
-        if (!success) return false;
-
-        playerTeams.put(player.getUUID(), teamName);
-        return true;
-    }
-
-    public boolean leaveTeam(ServerPlayer player) {
-        boolean success = savedData.leaveTeam(player.getUUID());
-        if (!success) return false;
-
-        playerTeams.remove(player.getUUID());
-        return true;
-    }
-
     public String getPlayerTeam(ServerPlayer player) {
         return playerTeams.get(player.getUUID());
+    }
+
+    /** Retourne toutes les équipes existantes */
+    public Set<String> getAllTeams() {
+        return teamPoints.keySet();
     }
 }

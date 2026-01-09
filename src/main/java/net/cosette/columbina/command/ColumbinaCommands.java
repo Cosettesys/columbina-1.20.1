@@ -6,6 +6,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ColumbinaCommands {
@@ -17,9 +18,9 @@ public class ColumbinaCommands {
                                 .then(Commands.literal("create")
                                         .then(Commands.argument("name", StringArgumentType.word())
                                                 .executes(context -> {
-                                                    String teamName = StringArgumentType.getString(context, "name");
-
-                                                    boolean success = TeamManager.getInstance().createTeam(teamName);
+                                                    String teamName = StringArgumentType.getString(context, "name"); // récupère le paramètre "name"
+                                                    ServerLevel level = context.getSource().getLevel();
+                                                    boolean success = TeamManager.getInstance().createTeam(level, teamName);
 
                                                     if (success) {
                                                         context.getSource().sendSuccess(
@@ -55,7 +56,8 @@ public class ColumbinaCommands {
                                                                     }
 
                                                                     // Essaie de rejoindre la team
-                                                                    boolean success = manager.joinTeam(player, teamName);
+                                                                    ServerLevel level = context.getSource().getLevel();
+                                                                    boolean success = TeamManager.getInstance().joinTeam(level, player, teamName);
 
                                                                     if (success) {
                                                                         context.getSource().sendSuccess(
@@ -77,7 +79,8 @@ public class ColumbinaCommands {
                                                 .executes(context -> {
                                                     ServerPlayer player = context.getSource().getPlayerOrException();
 
-                                                    boolean success = TeamManager.getInstance().leaveTeam(player);
+                                                    ServerLevel level = context.getSource().getLevel();
+                                                    boolean success = TeamManager.getInstance().leaveTeam(level, player);
 
                                                     if (success) {
                                                         context.getSource().sendSuccess(
