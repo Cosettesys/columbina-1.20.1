@@ -1,5 +1,6 @@
 package net.cosette.columbina;
 
+import net.cosette.columbina.item.ModItems;
 import net.fabricmc.api.ModInitializer;
 
 import org.slf4j.Logger;
@@ -11,6 +12,6 @@ public class Columbina implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("Hello Fabric world!");
+		ModItems.RegisterItems();
 	}
 }
