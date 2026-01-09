@@ -28,6 +28,12 @@ public class TeamManager {
         return true;
     }
 
+    public boolean isPlayerInTeam(ServerPlayer player) {
+        return playerTeams.containsKey(player.getUUID());
+    }
+
+
+
     public void addPoints(String team, int points) {
         teamPoints.put(team, teamPoints.getOrDefault(team, 0) + points);
     }
@@ -44,8 +50,17 @@ public class TeamManager {
         if (!teamPoints.containsKey(teamName)) {
             return false;
         }
+
+        if (playerTeams.containsKey(player.getUUID())) {
+            return false;
+        }
+
         playerTeams.put(player.getUUID(), teamName);
         return true;
+    }
+
+    public boolean leaveTeam(ServerPlayer player) {
+        return playerTeams.remove(player.getUUID()) != null;
     }
 
     public String getPlayerTeam(ServerPlayer player) {

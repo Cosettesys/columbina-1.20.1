@@ -44,7 +44,18 @@ public class ColumbinaCommands {
                                                                     ServerPlayer player = context.getSource().getPlayerOrException();
                                                                     String teamName = StringArgumentType.getString(context, "name");
 
-                                                                    boolean success = TeamManager.getInstance().joinTeam(player, teamName);
+                                                                    TeamManager manager = TeamManager.getInstance();
+
+                                                                    // Vérifie si le joueur est déjà dans une team
+                                                                    if (manager.isPlayerInTeam(player)) {
+                                                                        context.getSource().sendFailure(
+                                                                                Component.literal("Quitte d'abord ta team avant d'en rejoindre une autre.")
+                                                                        );
+                                                                        return 1;
+                                                                    }
+
+                                                                    // Essaie de rejoindre la team
+                                                                    boolean success = manager.joinTeam(player, teamName);
 
                                                                     if (success) {
                                                                         context.getSource().sendSuccess(
@@ -60,6 +71,27 @@ public class ColumbinaCommands {
                                                                     return 1;
                                                                 })
                                                 )
+                                )
+                                .then(
+                                        Commands.literal("leave")
+                                                .executes(context -> {
+                                                    ServerPlayer player = context.getSource().getPlayerOrException();
+
+                                                    boolean success = TeamManager.getInstance().leaveTeam(player);
+
+                                                    if (success) {
+                                                        context.getSource().sendSuccess(
+                                                                () -> Component.literal("Tu as quitté ton équipe."),
+                                                                false
+                                                        );
+                                                    } else {
+                                                        context.getSource().sendFailure(
+                                                                Component.literal("Tu n'es dans aucune équipe.")
+                                                        );
+                                                    }
+
+                                                    return 1;
+                                                })
                                 )
                         )
         );
