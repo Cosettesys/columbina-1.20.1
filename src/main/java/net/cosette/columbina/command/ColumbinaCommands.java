@@ -6,6 +6,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import com.mojang.brigadier.CommandDispatcher;
+import net.minecraft.server.level.ServerPlayer;
 
 public class ColumbinaCommands {
 
@@ -34,6 +35,31 @@ public class ColumbinaCommands {
                                                     return 1;
                                                 })
                                         )
+                                )
+                                .then(
+                                        Commands.literal("join")
+                                                .then(
+                                                        Commands.argument("name", StringArgumentType.word())
+                                                                .executes(context -> {
+                                                                    ServerPlayer player = context.getSource().getPlayerOrException();
+                                                                    String teamName = StringArgumentType.getString(context, "name");
+
+                                                                    boolean success = TeamManager.getInstance().joinTeam(player, teamName);
+
+                                                                    if (success) {
+                                                                        context.getSource().sendSuccess(
+                                                                                () -> Component.literal("Tu as rejoint l'équipe " + teamName),
+                                                                                false
+                                                                        );
+                                                                    } else {
+                                                                        context.getSource().sendFailure(
+                                                                                Component.literal("Cette équipe n'existe pas.")
+                                                                        );
+                                                                    }
+
+                                                                    return 1;
+                                                                })
+                                                )
                                 )
                         )
         );

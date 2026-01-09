@@ -1,13 +1,18 @@
 package net.cosette.columbina.team;
 
+import net.minecraft.server.level.ServerPlayer;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class TeamManager {
 
     private static final TeamManager INSTANCE = new TeamManager();
 
     private final Map<String, Integer> teamPoints = new HashMap<>();
+
+    private final Map<UUID, String> playerTeams = new HashMap<>();
 
     private TeamManager() {}
 
@@ -33,5 +38,17 @@ public class TeamManager {
 
     public boolean teamExists(String name) {
         return teamPoints.containsKey(name);
+    }
+
+    public boolean joinTeam(ServerPlayer player, String teamName) {
+        if (!teamPoints.containsKey(teamName)) {
+            return false;
+        }
+        playerTeams.put(player.getUUID(), teamName);
+        return true;
+    }
+
+    public String getPlayerTeam(ServerPlayer player) {
+        return playerTeams.get(player.getUUID());
     }
 }
