@@ -12,6 +12,7 @@ public class Columbina implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		System.out.println("[COLUMBINA TEST] onInitialize called!");
 		LOGGER.info("Columbina mod initialized!");
 		ModItems.RegisterItems();
 	}
