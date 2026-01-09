@@ -8,21 +8,17 @@ import com.mojang.brigadier.CommandDispatcher;
 
 public class ColumbinaCommands {
 
-    public static void registerCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
-        // /columbina team create <name>
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
                 Commands.literal("columbina")
-                        .then(
-                                Commands.literal("team")
-                                .then(
-                                        Commands.literal("create")
-                                        .then(
-                                                Commands.argument("name", StringArgumentType.word())
-                                                        .executes(ctx -> {
-                                                            String teamName = StringArgumentType.getString(ctx, "name");
-                                                            ctx.getSource().sendSuccess(() -> Component.literal("Équipe créée : " + teamName), false);
-                                                            return 1;
-                                                        })
+                        .then(Commands.literal("team")
+                                .then(Commands.literal("create")
+                                        .then(Commands.argument("name", StringArgumentType.word())
+                                                .executes(context -> {
+                                                    String teamName = StringArgumentType.getString(context, "name");
+                                                    context.getSource().sendSuccess(() -> Component.literal("Team created: " + teamName), false);
+                                                    return 1;
+                                                })
                                         )
                                 )
                         )
