@@ -18,9 +18,6 @@
 		"main": [
 			"net.cosette.columbina.Columbina"
 		],
-//		"client": [
-//			"net.cosette.columbina.ColumbinaClient"
-//		],
 		"fabric-datagen": [
 			"net.cosette.columbina.ColumbinaDataGenerator"
 		]
