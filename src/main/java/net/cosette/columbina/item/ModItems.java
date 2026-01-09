@@ -9,12 +9,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.resources.ResourceLocation;
-
+import net.cosette.columbina.item.TokenItem;
 
 
 public class ModItems {
 
-    public static final Item TOKEN = registerItem("token", new Item(new FabricItemSettings()));
+    public static final Item TOKEN = registerItem(
+            "token",
+            new TokenItem(new FabricItemSettings())
+    );
 
     private static void addItemsToIngredientItemGroups(FabricItemGroupEntries entries) {
         Columbina.LOGGER.info("Adding Columbina items to creative tab");
