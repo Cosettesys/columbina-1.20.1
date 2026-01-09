@@ -12,6 +12,7 @@ public class Columbina implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		LOGGER.info("Columbina mod initialized!");
 		ModItems.RegisterItems();
 	}
 }

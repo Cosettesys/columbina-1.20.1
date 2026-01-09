@@ -17,6 +17,7 @@ public class ModItems {
     public static final Item TOKEN = registerItem("token", new Item(new FabricItemSettings()));
 
     private static void addItemsToIngredientItemGroups(FabricItemGroupEntries entries) {
+        Columbina.LOGGER.info("Adding Columbina items to creative tab");
         entries.accept(TOKEN);
     }
 

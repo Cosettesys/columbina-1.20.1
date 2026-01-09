@@ -1,7 +1,7 @@
 {
 	"schemaVersion": 1,
 	"id": "columbina",
-	"version": "${version}",
+	"version": "1.0",
 	"name": "Columbina",
 	"description": "Système de jetons/points par équipe.",
 	"authors": [
