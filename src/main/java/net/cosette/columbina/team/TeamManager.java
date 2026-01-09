@@ -7,7 +7,6 @@ public class TeamManager {
 
     private static final TeamManager INSTANCE = new TeamManager();
 
-    // Nom de l'équipe -> points
     private final Map<String, Integer> teamPoints = new HashMap<>();
 
     private TeamManager() {}
@@ -17,20 +16,22 @@ public class TeamManager {
     }
 
     public boolean createTeam(String name) {
-        if (teamPoints.containsKey(name)) return false; // déjà existante
+        if (teamPoints.containsKey(name)) {
+            return false;
+        }
         teamPoints.put(name, 0);
         return true;
     }
 
-    public void addPoints(String teamName, int points) {
-        teamPoints.merge(teamName, points, Integer::sum);
+    public void addPoints(String team, int points) {
+        teamPoints.put(team, teamPoints.getOrDefault(team, 0) + points);
     }
 
-    public int getPoints(String teamName) {
-        return teamPoints.getOrDefault(teamName, 0);
+    public int getPoints(String team) {
+        return teamPoints.getOrDefault(team, 0);
     }
 
-    public Map<String, Integer> getAllTeams() {
-        return Map.copyOf(teamPoints);
+    public boolean teamExists(String name) {
+        return teamPoints.containsKey(name);
     }
 }

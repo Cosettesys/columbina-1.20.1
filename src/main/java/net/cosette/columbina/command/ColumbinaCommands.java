@@ -1,6 +1,7 @@
 package net.cosette.columbina.command;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.cosette.columbina.team.TeamManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -16,7 +17,20 @@ public class ColumbinaCommands {
                                         .then(Commands.argument("name", StringArgumentType.word())
                                                 .executes(context -> {
                                                     String teamName = StringArgumentType.getString(context, "name");
-                                                    context.getSource().sendSuccess(() -> Component.literal("Team created: " + teamName), false);
+
+                                                    boolean success = TeamManager.getInstance().createTeam(teamName);
+
+                                                    if (success) {
+                                                        context.getSource().sendSuccess(
+                                                                () -> Component.literal("Équipe créée : " + teamName),
+                                                                false
+                                                        );
+                                                    } else {
+                                                        context.getSource().sendSuccess(
+                                                                () -> Component.literal("L'équipe existe déjà : " + teamName),
+                                                                false
+                                                        );
+                                                    }
                                                     return 1;
                                                 })
                                         )
